@@ -1,0 +1,14 @@
+tensorflow-gpu==2.3.0
+Keras
+sklearn
+scikit-image
+gevent
+opencv-python-headless
+pandas 
+numpy
+h5py
+starlette
+uvicorn
+python-multipart
+aiofiles
+aiohttp
