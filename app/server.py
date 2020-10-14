@@ -55,7 +55,7 @@ import uvicorn, aiohttp, asyncio
 import sys, numpy as np
 
 path = Path(__file__).parent
-model_file_url = 'https://drive.google.com/uc?export=download&id=1-4D7hdrEEiKsnj1gjr99XVhqgfwBm4y8'
+model_file_url = 'https://drive.google.com/uc?export=download&id=1-HXsrFq8azMrGXPVv23ibtWYOBpRlHGB'
 model_file_name = 'model'
 
 app = Starlette()
@@ -98,7 +98,7 @@ optimizer = keras.optimizers.RMSprop(lr=learningRate)
 
 
 
-#Generare Model
+#Generate Model 
 
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.vgg16 import VGG16
@@ -110,29 +110,67 @@ from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
 
 def Model_build():
+  # Importing the important libraries
 
-  base_model = InceptionV3(include_top=False, weights='imagenet')
-  # Training only top layers i.e. the layers which we have added in the end
-  for layer in base_model.layers:
+  def single_branch(name_modifier):#add name_modifier cause we use a single model(like InceptionV3) mutilple times. 
+    
+    base_model = InceptionV3(include_top=False, weights='imagenet')
+    for layer in base_model.layers:
       layer.trainable = True
-  
-  # Taking the output of the last convolution block in InceptionV3
-  x = base_model.output
-  
-  # Adding a Global Average Pooling layer
-  x = GlobalAveragePooling2D()(x)
+    
+    for layer in base_model.layers:
+      layer._name = layer.name + str(name_modifier)
 
 
+    x = base_model.output
+    
+    x = GlobalAveragePooling2D()(x)
 
-  # Adding a fully connected layer having 2 neurons which will
-  # give the probability of image having either dog or cat
-  predictions = Dense(2, activation='softmax')(x)
-  
-  # Model to be trained
-  model = Model(inputs=base_model.input, outputs=predictions)
+    # x = Dense(1024, activation='relu')(x)
+
+    # predictions = Dense(number_classes, activation='softmax')(x)
+
+    model = Model(inputs=base_model.input, outputs=x)
     
     # Training only top layers i.e. the layers which we have added in the end
+    return model
+
+
+
+
+
+
+  Frontal_branch=single_branch('one')
+  Lateral_branch=single_branch('two')
+  Oblique_branch=single_branch('three')
+
+
+
+  # plot_model(Oblique_branch)
+
+
+  combinedInput = concatenate([Frontal_branch.output, Lateral_branch.output,Oblique_branch.output])
+
+  predictions = Dense(number_classes, activation='softmax',name='visualize_layer')(combinedInput)
+
+
+
+  model=Model(inputs=[Frontal_branch.input,Lateral_branch.input,Oblique_branch.input],outputs=predictions)
   return model
+
+# model.summary()
+
+# plot_model(model)
+
+
+
+
+
+
+  # model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=["accuracy"])
+  
+
+
 
 
   
@@ -222,9 +260,11 @@ def model_predict(img_path, model):
     
     img = cv2.imread(img_path)
     img = skimage.transform.resize(img, (224, 224))
-    img_file=img/255.0
+    img_file=img/224.0
     x = np.asarray(img_file)
     x=x.reshape((1,224,224,3))
+    
+    x=[X_Frontal_train, X_Lateral_train,X_Oblique_train]
     y_pred = model.predict(x)
     
     
