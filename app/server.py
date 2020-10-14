@@ -248,23 +248,40 @@ loop.close()
 async def upload(request):
     data = await request.form()
     img_bytes = await (data["file"].read())
-    with open(IMG_FILE_SRC, 'wb') as f: f.write(img_bytes)
-    return model_predict(IMG_FILE_SRC, model)
+    with open(IMG_FILE_SRC_Frontal, 'wb') as f: f.write(img_bytes)
+      
+      
+    data = await request.form()
+    img_bytes = await (data["file2"].read())
+    with open(IMG_FILE_SRC_Lateral, 'wb') as f: f.write(img_bytes)
+      
+      
+    data = await request.form()
+    img_bytes = await (data["file3"].read())
+    with open(IMG_FILE_SRC_Oblique, 'wb') as f: f.write(img_bytes)
+      
+      
+ 
+      
+    return model_predict(IMG_FILE_SRC_Frontal,IMG_FILE_SRC_Lateral,IMG_FILE_SRC_Oblique, model)
 
 
 
 
 
-def model_predict(img_path, model):
+def model_predict(img_path_frontal,img_path_Lateral,img_path_Oblique, model):
     result = [];     
     
-    img = cv2.imread(img_path)
-    img = skimage.transform.resize(img, (224, 224))
-    img_file=img/224.0
-    x = np.asarray(img_file)
-    x=x.reshape((1,224,224,3))
     
-    x=[X_Frontal_train, X_Lateral_train,X_Oblique_train]
+    def img_prep(img_path):
+      img = cv2.imread(img_path)
+      img = skimage.transform.resize(img, (224, 224))
+      img_file=img/224.0
+      x = np.asarray(img_file)
+      x=x.reshape((1,224,224,3))
+      return(x)
+    
+    x=[img_prep(img_path_frontal), img_prep(img_path_Lateral),img_prep(img_path_Oblique)]
     y_pred = model.predict(x)
     
     
