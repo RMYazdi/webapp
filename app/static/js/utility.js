@@ -90,9 +90,9 @@ function fileChange(e) {
 
 var el = x => document.getElementById(x);
 
-var upload_img = document.getElementById('inp_file2').addEventListener('change', fileChange, false);
+var upload_img = document.getElementById('inp_file2').addEventListener('change', fileChange2, false);
 
-function fileChange(e) {
+function fileChange2(e) {
 
     var file = e.target.files[0];
 
@@ -197,9 +197,9 @@ function fileChange(e) {
 
 var el = x => document.getElementById(x);
 
-var upload_img = document.getElementById('inp_file3').addEventListener('change', fileChange, false);
+var upload_img = document.getElementById('inp_file3').addEventListener('change', fileChange3, false);
 
-function fileChange(e) {
+function fileChange3(e) {
 
     var file = e.target.files[0];
 
