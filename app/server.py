@@ -55,7 +55,7 @@ import uvicorn, aiohttp, asyncio
 import sys, numpy as np
 
 path = Path(__file__).parent
-model_file_url = 'https://drive.google.com/uc?export=download&id=1-4D7hdrEEiKsnj1gjr99XVhqgfwBm4y8'
+model_file_url = 'https://drive.google.com/uc?export=download&id=1Tg8z6abppWDoFom40Brt9ltp7E7A4b5m'
 model_file_name = 'model'
 
 app = Starlette()
