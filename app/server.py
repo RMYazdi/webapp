@@ -228,7 +228,7 @@ def model_predict(img_path, model):
     y_pred = model.predict(x)
     
     
-    Label_dict={0:"Patient",1:"Normal"}
+    Label_dict={0:"Presence of ankle fracture",1:"Normal"}
     label=Label_dict[np.argmax(y_pred, axis=1)[0]]
     accuracy=max(y_pred[0])
     
