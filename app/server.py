@@ -228,12 +228,12 @@ def model_predict(img_path, model):
     y_pred = model.predict(x)
     
     
-    Label_dict={0:"Presence of ankle fracture",1:"Normal"}
+    Label_dict={0:"Ankle fracture is present",1:"Normal"}
     label=Label_dict[np.argmax(y_pred, axis=1)[0]]
     accuracy=max(y_pred[0])
     
     result.append((label,accuracy))
-    result_report="Status= {},\n      Accuracy= {:.2f}%".format(label,accuracy*100)
+    result_report=" {},\n  with  of  Accuracy  {:.2f}%".format(label,accuracy*100)
     
     result_html1 = path/'static'/'result1.html'
     result_html2 = path/'static'/'result2.html'
